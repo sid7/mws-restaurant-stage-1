@@ -1,25 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Normalize.css for better cross-browser consistency -->
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
   <!-- Main CSS file -->
   <link rel="stylesheet" href="css/styles.css" type="text/css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
   <title>Restaurant Info</title>
+  <meta name="theme-color" content="#00C853">
 </head>
 
-<body class="inside">
+<body class="restaurant-details">
+  <div class="focus-within-only">
+    <a href="#address">Restaurant's Address</a>
+    <a href="#restaurant-hours">Restaurant's Timing</a>
+    <a href="#reviews-container">Reviews</a>
+  </div>
   <!-- Beginning header -->
   <header>
     <!-- Beginning nav -->
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1><a href="/" aria-label="Link to Restaurant Reviews Home Page">Restaurant Reviews</a></h1>
     </nav>
     <!-- Beginning breadcrumb -->
     <ul id="breadcrumb" >
-      <li><a href="/">Home</a></li>
+      <li><a href="/" aria-label="Link to Home page">Home</a></li>
     </ul>
     <!-- End breadcrumb -->
     <!-- End nav -->
@@ -28,30 +36,40 @@
 
   <!-- Beginning main -->
   <main id="maincontent">
-    <!-- Beginning map -->
-    <section id="map-container">
-      <div id="map"></div>
-    </section>
-    <!-- End map -->
+    <h1 id="restaurant-name" aria-label="Restaurant name"></h1>
     <!-- Beginning restaurant -->
     <section id="restaurant-container">
-      <h1 id="restaurant-name"></h1>
-      <img id="restaurant-img">
-      <p id="restaurant-cuisine"></p>
-      <p id="restaurant-address"></p>
-      <table id="restaurant-hours"></table>
+      <div class="img-container">
+        <img id="restaurant-img" alt="Cuisine picture">
+      </div>
+      <p id="restaurant-cuisine" aria-label="Restaurant cuisine"></p>
+      <h2 class="landmark" id="address">Address: </h2>
+      <p id="restaurant-address" aria-labelledby="address"></p>
+      <hr/>
+      <!-- <h2 class="landmark" id="restaurant-timing"></h2> -->
+      <table id="restaurant-hours" aria-label="Restaurant hours">
+        <caption class="landmark">Timing -</caption>
+      </table>
     </section>
     <!-- end restaurant -->
-    <!-- Beginning reviews -->
-    <section id="reviews-container">
-      <ul id="reviews-list"></ul>
-    </section>
-    <!-- End reviews -->
+    <!-- Beginning wraper -->
+    <div class="wraper">
+      <!-- Beginning map -->
+      <section id="map-container">
+        <div id="map" role="application" aria-label="restaurants location on map"></div>
+      </section>
+      <!-- End map -->
+      <!-- Beginning reviews -->
+      <section id="reviews-container">
+        <ul id="reviews-list"></ul>
+      </section>
+      <!-- End reviews -->
+    </div>
   </main>
   <!-- End main -->
 
   <!-- Beginning footer -->
-  <footer id="footer">
+  <footer>
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
   <!-- End footer -->

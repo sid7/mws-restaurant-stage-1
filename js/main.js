@@ -4,11 +4,53 @@ let restaurants,
 var newMap
 var markers = []
 
+
+
+if(navigator.serviceWorker) {
+  /**
+   * Register Service Worker
+   * */
+  navigator.serviceWorker.register("./sw.js").then(reg => {
+    console.log("Service Worker Registered");
+    if(!navigator.serviceWorker.controller) {
+      return;
+    }
+    if(reg.waiting) {
+      navigator.serviceWorker.controller.postMessage({action: 'skipWaiting'});
+      return;
+    }
+    if(reg.installing) {
+      navigator.serviceWorker.addEventListener('statechange', () => {
+        if (navigator.serviceWorker.controller.state == 'installed') {
+          navigator.serviceWorker.controller.postMessage({action: 'skipWaiting'});
+        }
+      });
+    }
+    reg.addEventListener('updatefound', function() {
+      navigator.serviceWorker.addEventListener('statechange', () => {
+        if (navigator.serviceWorker.controller.state == 'installed') {
+          navigator.serviceWorker.controller.postMessage({action: 'skipWaiting'});
+        }
+      });
+    });
+  }).catch(err => { console.log("Service worker registration failed", err)});
+} else {
+  console.log("This browser does not support Service Worker!");
+}
+
+// Ensure refresh is only called once
+let refreshing;
+navigator.serviceWorker.addEventListener('controllerchange', () => {
+  if (refreshing) { return; }
+  window.location.reload();
+  refreshing = true;
+});
+
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
-  initMap(); // added 
+  initMap(); // added
   fetchNeighborhoods();
   fetchCuisines();
 });
@@ -78,7 +120,7 @@ initMap = () => {
         scrollWheelZoom: false
       });
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-    mapboxToken: '<your MAPBOX API KEY HERE>',
+    mapboxToken: 'pk.eyJ1Ijoic2lkNyIsImEiOiJjamp1OGJvd2QwMzAzM3ByejRnd2x2NXY4In0.fkA6CjOQbzCkLVqJ1Wm4lA',
     maxZoom: 18,
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
       '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -153,15 +195,43 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 }
 
 /**
+ * zoom and move image on hover
+ */
+imgHov = ({pageX, pageY, target: el}) => {
+  const origin = ((pageX - el.offsetLeft) / el.width) * 100 + '% ' + ((pageY - el.offsetTop) / el.height) * 100 +'%';
+  el.style.cssText = 'transform-origin: ' + origin;
+}
+
+/**
+ * res image url
+ */
+resImgUrl = (r, s) => {
+  s = s === "sm" ? "-400_sm" : "-800_md";
+  r = r.replace(/\.jpg/, s + ".jpg");
+  return "/images_src/" + r;
+}
+/**
  * Create restaurant HTML.
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
+  const container = document.createElement('div');
+  li.setAttribute('tabindex', 0);
+  container.className = "img-container";
 
+  const p = document.createElement('picture');
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  li.append(image);
+  image.src = resImgUrl(restaurant.photograph, "sm");
+  image.alt = " ";
+  image.onmousemove = imgHov;
+
+  p.innerHTML = `<source media="(max-width: 400px)" srcset="${resImgUrl(restaurant.photograph, "sm")}" />`;
+  p.innerHTML += `<source media="(min-width: 401px)" srcset="${resImgUrl(restaurant.photograph, "md")}" />`;
+  p.appendChild(image);
+
+  container.append(p);
+  li.append(container);
 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
@@ -178,6 +248,7 @@ createRestaurantHTML = (restaurant) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
+  more.setAttribute("aria-label", `Click to open ${restaurant.name}'s details page`);
   li.append(more)
 
   return li
@@ -197,7 +268,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 
-} 
+}
 /* addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
