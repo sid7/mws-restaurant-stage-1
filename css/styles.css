@@ -50,32 +50,35 @@ footer {
   text-align: center;
   text-transform: uppercase;
 }
-/* ====================== Navigation ====================== */
-nav {
+/* ====================== nav:not(#breadcrumb)igation ====================== */
+nav:not(#breadcrumb) {
   width: 100%;
   background-color: #00C853;
   text-align:center;
 }
-nav h1 {
+nav:not(#breadcrumb) h1 {
   margin: auto;
   padding: .5rem;
 }
-nav h1 a {
+nav:not(#breadcrumb) h1 a {
   color: #fff;
   font-size: 2rem;
   font-weight: 200;
   letter-spacing: 10px;
   text-transform: uppercase;
 }
-nav h1 a:hover {
+nav:not(#breadcrumb) h1 a:hover {
   color: #eee;
 }
 #breadcrumb {
   padding: 5px 10px;
-  list-style: none;
   background-color: rgba(0, 0, 0, 0.04);
   font-size: 1.5rem;
+}
+#breadcrumb ol {
   margin: 0;
+  padding-left: 0;
+  list-style: none;
 }
 
 /* Display list items side by side */
@@ -192,7 +195,7 @@ nav h1 a:hover {
 .img-container img:hover {
   transform: scale(1.2);
 }
-#restaurants-list li h1 {
+#restaurants-list li h2 {
   position: relative;
   color: #f18200;
   font-family: Arial,sans-serif;
@@ -204,7 +207,7 @@ nav h1 a:hover {
   margin-bottom: 4px;
   text-transform: uppercase;
 }
-#restaurants-list li h1::before,
+#restaurants-list li h2::before,
 #restaurant-name::before,
 #reviews-container h2:before {
   content: '';
@@ -429,14 +432,14 @@ nav h1 a:hover {
   white-space: normal;
 }
 
-.above-nav, .focus-within-only a {
+.above-nav:not(#breadcrumb), .focus-within-only a {
   color: #fff;
   width: 100%;
   font-size: 1.2rem;
   padding: 5px;
   margin: 10px;
 }
-.above-nav, .focus-within-only a:focus {
+.above-nav:not(#breadcrumb), .focus-within-only a:focus {
   outline: 2px solid #fff;
 }
 

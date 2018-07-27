@@ -151,7 +151,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant).replace(/\.jpg/, "-400_sm.jpg");
-  image.alt = restaurant.name  + " picture";
+  image.alt = `Image of ${restaurant.name} Restaurant`;
   image.onmousemove = imgHov;
   p.appendChild(image);
   const cuisine = document.getElementById('restaurant-cuisine');
@@ -246,9 +246,10 @@ createReviewHTML = (review) => {
  * Add restaurant name to the breadcrumb navigation menu
  */
 fillBreadcrumb = (restaurant=self.restaurant) => {
-  const breadcrumb = document.getElementById('breadcrumb');
+  const breadcrumb = document.querySelector('#breadcrumb ol');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
+  li.setAttribute("aria-current", "page");
   breadcrumb.appendChild(li);
 }
 

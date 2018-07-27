@@ -223,7 +223,7 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.src = resImgUrl(restaurant.photograph, "sm");
-  image.alt = " ";
+  image.alt = `Image of ${restaurant.name} Restaurant`;
   image.onmousemove = imgHov;
 
   p.innerHTML = `<source media="(max-width: 400px)" srcset="${resImgUrl(restaurant.photograph, "sm")}" />`;
@@ -233,7 +233,7 @@ createRestaurantHTML = (restaurant) => {
   container.append(p);
   li.append(container);
 
-  const name = document.createElement('h1');
+  const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   li.append(name);
 
