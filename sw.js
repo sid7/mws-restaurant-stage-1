@@ -3,17 +3,17 @@
 /**
  * name of caches
  */
-const static_cache_name = "restaurant-reviews-v1";
-
+const static_cache_name = "restaurant-reviews-v2";
+const img_cache = "restaurant-imgs";
+const map_imgs = "map-imgs";
 /**
  * list of static files which to be cache
  */
 const static_files = [
   "/",
   "css/styles.css",
-  "data/restaurants.json",
   "img/",
-  "js/dbhelper.js",
+  "js/lib.js",
   "js/main.js",
   "js/restaurant_info.js"
 ];
@@ -31,20 +31,23 @@ self.addEventListener("install", e => {
 
 self.addEventListener("activate", e => {
   e.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames
-          .filter(cacheName => {
-            return (
-              cacheName.startsWith("restaurant-") &&
-              cacheName != static_cache_name
-            );
-          })
-          .map(cacheName => {
-            return caches.delete(cacheName);
-          })
-      );
-    })
+    caches
+      .keys()
+      .then(cacheNames => {
+        return Promise.all(
+          cacheNames
+            .filter(cacheName => {
+              return (
+                cacheName.startsWith("restaurant-") &&
+                cacheName != static_cache_name
+              );
+            })
+            .map(cacheName => {
+              return caches.delete(cacheName);
+            })
+        );
+      })
+      .catch(err => console.log(err))
   );
 });
 
@@ -54,16 +57,16 @@ self.addEventListener("activate", e => {
  */
 self.addEventListener("fetch", e => {
   e.respondWith(
-    caches.match(e.request).then(Res => {
-      if (Res) {
-        return Res;
+    caches.match(e.request).then(cRes => {
+      if (cRes) {
+        return cRes;
       }
-      return fetch(e.request).then(res =>
-        caches.open(static_cache_name).then(cache => {
-          cache.put(e.request.url, res.clone());
-          return res;
-        })
-      );
+      return fetch(e.request).then(fRes => {
+        return caches.open(static_cache_name).then(cache => {
+          cache.put(e.request.url, fRes.clone());
+          return fRes;
+        });
+      });
     })
   );
 });

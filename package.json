@@ -1,0 +1,18 @@
+{
+  "name": "mws-restaurant-reviews",
+  "version": "0.0.1",
+  "repository": "https://github.com/sid7/mws-restaurant-stage-1.git",
+  "private": true,
+  "scripts": {
+    "gulp": "gulp",
+    "build": "gulp build"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-sass": "^4.0.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglify-es": "^1.0.4"
+  }
+}

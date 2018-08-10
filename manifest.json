@@ -1,0 +1,25 @@
+{
+  "name": "Restaurants Reviews",
+  "short_name": "RR",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "32x32 16x16 48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "favicon-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#008080",
+  "background_color": "#ffffff"
+}
