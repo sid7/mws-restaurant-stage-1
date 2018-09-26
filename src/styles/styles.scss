@@ -197,6 +197,8 @@ nav:not(#breadcrumb) {
       padding: 20px 0 5px;
       margin-bottom: 4px;
       text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
     }
     a {
       background-color: #00695c;
@@ -497,4 +499,20 @@ img.style-image-alt {
 // adj background-color of map attr for acc
 .leaflet-container .leaflet-control-attribution {
   background-color: rgba(255, 255, 255, 0.85);
+}
+
+// stage-3 addition
+
+.is-fav {
+  color: #eee;
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+
+  &:not(.yes):hover {
+    color: $theme-color-alpha;
+  }
+  &.yes {
+    color: $theme-color;
+  }
 }

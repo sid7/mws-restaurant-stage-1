@@ -3,6 +3,7 @@ const sass = require("gulp-sass");
 const autoprefixer = require("gulp-autoprefixer");
 const concat = require("gulp-concat");
 const sourcemaps = require("gulp-sourcemaps");
+const rename = require("gulp-rename");
 const uglify = require("gulp-uglify-es").default;
 
 const path = {
@@ -27,6 +28,7 @@ gulp.task("styles", function() {
     )
     .pipe(concat("styles.css"))
     .pipe(autoprefixer({ browsers: ["last 2 versions"] }))
+    .pipe(rename({ suffix: ".min" }))
     .pipe(gulp.dest(path.styles.dest));
 });
 
@@ -39,6 +41,7 @@ gulp.task("lib", function() {
     .pipe(sourcemaps.init())
     .pipe(concat("lib.js"))
     .pipe(uglify())
+    .pipe(rename({ suffix: ".min" }))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(path.lib.dest));
 });
@@ -51,8 +54,9 @@ gulp.task("scripts", function() {
     .src(path.scripts.src)
     .pipe(sourcemaps.init())
     .pipe(uglify())
+    .pipe(rename({ suffix: ".min" }))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest(path.scripts.dest))
+    .pipe(gulp.dest(path.scripts.dest));
 });
 
 /**

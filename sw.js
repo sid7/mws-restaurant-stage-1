@@ -11,11 +11,11 @@ const map_imgs = "map-imgs";
  */
 const static_files = [
   "/",
-  "css/styles.css",
+  "css/styles.min.css",
   "img/",
-  "js/lib.js",
-  "js/main.js",
-  "js/restaurant_info.js"
+  "js/lib.min.js",
+  "js/main.min.js",
+  "js/restaurant_info.min.js"
 ];
 
 /**

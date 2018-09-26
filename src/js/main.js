@@ -164,6 +164,11 @@ function ImgError() {
   this.classList.add("style-image-alt");
   this.onmousemove = null;
 }
+function toggleFav() {
+  this.classList.toggle("yes");
+  const [a, b] = this.classList.contains("yes") ? ["add", "remove"] : ["remove", "add"];
+  this.setAttribute("aria-label", this.getAttribute("aria-label").replace(a, b));
+}
 /**
  * Create restaurant HTML.
  */
@@ -186,6 +191,14 @@ createRestaurantHTML = (restaurant) => {
   const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   li.append(name);
+
+  const fav = document.createElement("button");
+  fav.textContent = "❤";
+  const isFav = JSON.parse(restaurant.is_favorite);
+  fav.className = "is-fav" + (isFav ? " yes" : "");
+  fav.onclick = toggleFav;
+  fav.setAttribute("aria-label", `click to ${isFav ? "remove" : "add"} ${restaurant.name} to favorite`)
+  name.append(fav);
 
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
