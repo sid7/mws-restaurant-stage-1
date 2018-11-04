@@ -1,4 +1,8 @@
-const _uniChar = { logo: "🍽" }
+const $ = q => document.querySelector(q);
+const $$ = q => document.querySelectorAll(q);
+const _uniChar = { logo: "🍽" };
+const db_url = `http://${location.hostname}:1337`;
+
 class sw_msgs {
   constructor() {
     this.pic = {
@@ -6,53 +10,69 @@ class sw_msgs {
       success: "✔️" || "✓",
       err: "⚠️" || "⚠",
       local: "💾"
-    }
+    };
   }
-  base(a) { return "%c" + this.pic.worker + " " + a + " "; }
+  base(a) {
+    return "%c" + this.pic.worker + " " + a + " ";
+  }
   success(s = "font-size: 20px") {
-    return console.log(this.base("Service Worker Registered") + this.pic.success, s);
+    return console.log(
+      this.base("Service Worker Registered") + this.pic.success,
+      s
+    );
   }
   err(s = "font-size: 20px;color: #f00", e) {
-    return console.log(this.base(e ? "Service worker registration failed" : "This browser does not support Service Worker!") + this.pic.err, s, e);
+    return console.log(
+      this.base(
+        e
+          ? "Service worker registration failed"
+          : "This browser does not support Service Worker!"
+      ) + this.pic.err,
+      s,
+      e
+    );
   }
   fromLocal(s = "font-size: 16px;") {
-    return console.log(this.base("data fetch from indexDB(idb)") + this.pic.local, s);
+    return console.log(
+      this.base("data fetch from indexDB(idb)") + this.pic.local,
+      s
+    );
   }
 }
 const _msg = new sw_msgs();
 
-class utils {
-  static get __metaInfo() {
-    return { indexDB_ver: 1, storeName: "restaurants" };
+class Toast {
+  constructor() {
+    this.timer = null;
   }
-  static __openiDB() {
-    return idb.open("restaurants-reviews", this.__metaInfo.indexDB_ver, DB => {
-      let store = DB.createObjectStore(this.__metaInfo.storeName, {
-        keyPath: "id"
-      });
-      store.createIndex("by-id", "id");
-    });
+  static action(type) {
+    const [add, remove] = type === "show" ? ["show", "hide"] : ["hide", "show"];
+    $(".toast").classList.add(add);
+    $(".toast").classList.remove(remove);
+    if (type === "hide") {
+      this.timer = null;
+    }
   }
-  static getData() {
-    return this.__openiDB().then(db => {
-      if (!db) {
-        return;
-      }
-      let tx = db.transaction(this.__metaInfo.storeName);
-      let store = tx.objectStore(this.__metaInfo.storeName);
-      return store.getAll();
-    });
+  static show(text, time = 5000) {
+    $(".toast-text").textContent = text;
+    this.action("show");
+    this.timer = window.setTimeout(() => {
+      this.action("hide");
+    }, time);
   }
-  static addData(data) {
-    this.__openiDB().then(db => {
-      let tx = db.transaction(this.__metaInfo.storeName, "readwrite");
-      let store = tx.objectStore(this.__metaInfo.storeName);
-      data.forEach(a => {
-        store.put(a);
-      });
-      return data;
-    });
+  static hide() {
+    this.action("hide");
   }
+}
+
+function inLoc(key) {
+  return JSON.parse(localStorage.getItem(key) || "false");
+}
+function fetch_json_err_check(res) {
+  if (!res.ok) {
+    throw new Error(res.status);
+  }
+  return res.json();
 }
 
 /**
@@ -64,52 +84,111 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 1337; // Change this to your server port
-    let url = new URL(location.origin);
-    url.port = port;
-    url.pathname = "restaurants";
-    // return `http://localhost:${port}/restaurants`;
-    return url;
+    return `${db_url}/restaurants`;
   }
 
   /**
    * Fetch all restaurants.
    * */
   static fetchRestaurants(callback) {
-    fetch(this.DATABASE_URL)
-      .then(res => res.json())
-      .then(json => {
-        if(json) {
-          utils.addData(json);
-          return callback(null, json);
-        }
-      }).catch(() => {
-        _msg.fromLocal();
-        utils
-          .getData()
-          .then(json => callback(null, json))
-          .catch(err => callback(err, null))
-      })
+    if (inLoc("loc_all_rest")) {
+      store.getAll("restaurants").then(rest => callback(null, rest));
+    } else {
+      fetch(`${db_url}/restaurants`)
+        .then(fetch_json_err_check)
+        .then(data => {
+          callback(null, data);
+          store.addAll("restaurants", data).then(() => {
+            localStorage.setItem("loc_all_rest", true);
+          });
+        })
+        .catch(err => {
+          callback(err, null);
+        });
+    }
   }
 
   /**
    * Fetch a restaurant by its ID.
    */
-  static fetchRestaurantById(id, callback) {
-    // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) {
-          // Got the restaurant
-          callback(null, restaurant);
+  static fetchRestaurantById(id, callback, loc = true) {
+    if (loc && inLoc("loc_all_rest")) {
+      store.getAllById("restaurants", id).then(rest => {
+        if (rest.length === 0) {
+          callback("Restaurant does not exist!", null);
         } else {
-          // Restaurant does not exist in the database
-          callback("Restaurant does not exist", null);
+          callback(null, rest[0]);
         }
+      });
+    } else {
+      fetch(`${db_url}/restaurants`)
+        .then(fetch_json_err_check)
+        .then(data => {
+          const rest = data.find(r => r.id === id);
+          if (rest) {
+            callback(null, rest);
+          } else {
+            callback("Restaurant does not exist", null);
+          }
+          store.addAll("restaurants", data).then(() => {
+            localStorage.setItem("loc_all_rest", true);
+          });
+        })
+        .catch(err => {
+          callback(err, null);
+        });
+    }
+  }
+  static fetchLocalReviewsById(id) {
+    // return store.getAllRevsByRestId_from_offline(id);
+    return store
+      .getAll("offline-reviews")
+      .then(items =>
+        items
+          .filter(item => Number(item.json.restaurant_id) === id)
+          .map(a => a.json)
+      );
+  }
+  /**
+   *
+   * Fetch Restaurant's review by Restaurant id
+   */
+  static fetchRestaurantReview(id, callback) {
+    const loc_rev = JSON.parse(localStorage.getItem("loc_rev") || "[]");
+    if (loc_rev.includes(id)) {
+      store.getAllByIndex("reviews", "restaurant_id", id).then(rev => {
+        callback(null, rev);
+      });
+    } else {
+      fetch(`${db_url}/reviews/?restaurant_id=${id}`)
+        .then(fetch_json_err_check)
+        .then(rev => {
+          callback(null, rev);
+          store.addAll("reviews", rev).then(() => {
+            loc_rev.push(id);
+            localStorage.setItem("loc_rev", JSON.stringify(loc_rev));
+          });
+        })
+        .catch(err => {
+          callback(err, null);
+        });
+    }
+  }
+
+  static fetchRestaurantWithReview(id, callback) {
+    this.fetchRestaurantById(id, (err1, rest) => {
+      if (err1) {
+        callback(err, null);
+        return;
       }
+      this.fetchRestaurantReview(id, (err2, rev) => {
+        rest.reviews = rev;
+        if (err2) {
+          callback(err2, null);
+        } else {
+          callback(null, rest);
+        }
+      });
     });
   }
 
@@ -254,4 +333,26 @@ class DBHelper {
     );
     return marker;
   } */
+  static fav(id, act) {
+    const url = `${db_url}/restaurants/${id}/?is_favorite=${act}`;
+    if (navigator.onLine) {
+      fetch(url, { method: "PUT" })
+        .then(fetch_json_err_check)
+        .then(data => {
+          console.log(data);
+          return store.add("restaurants", data);
+        })
+        .catch(err => {
+          console.log("Action: Failed!", err);
+        });
+    } else {
+      loc_fav(id, act);
+    }
+  }
+}
+
+function loc_fav(id, bool) {
+  const locFavs = JSON.parse(localStorage.getItem("loc_rest_fav") || "{}");
+  locFavs[id] = bool;
+  localStorage.setItem("loc_rest_fav", JSON.stringify(locFavs));
 }

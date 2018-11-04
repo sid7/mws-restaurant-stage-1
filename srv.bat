@@ -12,7 +12,7 @@ GOTO SRV
 :SRV
 start "" http://localhost:8000/
 REM remove below line for python 2.x
-python -m http.server 8000
+start "MWS Restaurant Stage-3 main server" python -m http.server 8000
 REM uncomment below line for python 2.x
-REM python -m SimpleHTTPServer 8000
-@echo on
+REM start "MWS Restaurant Stage-3 main server" python -m SimpleHTTPServer 8000
+exit

@@ -1,66 +1,14 @@
 @charset "utf-8";
-// vars
-$theme-color: #008080;
-$theme-color-alpha: rgba(0, 128, 128, 0.2);
+
+@import "./utils";
+@import "./genral.scss";
+@import "./main.scss";
+@import "./post-review.scss";
+@import "./star-rating.scss";
+
 
 /* CSS Document */
 
-*, ::before, ::after {
-  box-sizing: border-box;
-}
-
-body {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 16px;
-	color: #333;
-  line-height: 1.5;
-  background-color: #fdfdfd;
-	margin: 0;
-	position: relative;
-}
-ul, li {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 1rem;
-	color: #333;
-}
-a {
-  color: #0078A8;
-	text-decoration: none;
-  &:hover, &:focus {
-    color: #3397db;
-    text-decoration: none;
-  }
-  img {
-    border: none 0px #fff;
-  }
-}
-h1, h2, h3, h4, h5, h6 {
-  font-family: Arial, Helvetica, sans-serif;
-  margin: 0 0 20px;
-}
-article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
-	display: block;
-}
-#maincontent {
-  background-color: #fff;
-  min-height: 100%;
-}
-footer {
-  background-color: #333;
-  color: #bbb;
-  font-size: 1rem;
-  letter-spacing: 1px;
-  padding: 25px;
-  text-align: center;
-  text-transform: uppercase;
-  a {
-    color: #ccc;
-    &:hover {
-      color: #ddd;
-      text-decoration: underline;
-    }
-  }
-}
 /* ====================== nav:not(#breadcrumb)igation ====================== */
 nav:not(#breadcrumb) {
   width: 100%;
@@ -68,7 +16,7 @@ nav:not(#breadcrumb) {
   text-align: center;
   h1 {
     margin: auto;
-    padding: .5rem;
+    padding: 0.5rem;
     a {
       color: #fff;
       font-size: 2rem;
@@ -106,7 +54,7 @@ nav:not(#breadcrumb) {
     }
   }
   /* Add a slash symbol (/) before/behind each list item */
-  li+li:before {
+  li + li:before {
     padding: 8px;
     color: #fefefe;
     content: "/\00a0";
@@ -136,19 +84,20 @@ nav:not(#breadcrumb) {
     font-size: 1.5rem;
     font-weight: 200;
     margin: 0;
-    padding: .5rem;
+    padding: 0.5rem;
   }
   select {
     background-color: #fff;
     border: 1px solid #fff;
-    font-family: Arial,sans-serif;
+    font-family: Arial, sans-serif;
     font-size: 1rem;
     height: 35px;
     letter-spacing: 0;
     margin: 10px 5px;
     padding: 0 10px;
-    &:focus, &:active {
-      box-shadow: 0 0 0 .2rem rgba(0, 0, 0, 0.5);
+    &:focus,
+    &:active {
+      box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
     }
   }
 }
@@ -177,19 +126,21 @@ nav:not(#breadcrumb) {
     display: flex;
     flex-direction: column;
     background-color: #fff;
-    font-family: Arial,sans-serif;
+    font-family: Arial, sans-serif;
     margin: 0;
     min-height: 380px;
     padding: 15px;
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+    box-shadow: $box-shadow;
     &:focus {
-      box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12), 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12),
+        0 0 0 0.2rem rgba(40, 167, 69, 0.5);
     }
 
     h2 {
       position: relative;
       color: $theme-color;
-      font-family: Arial,sans-serif;
+      font-family: Arial, sans-serif;
       font-size: 1.4rem;
       font-weight: 200;
       letter-spacing: 0;
@@ -217,7 +168,7 @@ nav:not(#breadcrumb) {
         background-color: #004d40;
       }
       &:focus {
-        box-shadow: 0 0 0 0.2rem rgba(40,167,69,.5);
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
       }
     }
   }
@@ -238,17 +189,21 @@ nav:not(#breadcrumb) {
 }
 .img-container {
   overflow: hidden;
+  border-radius: 5px;
   img:not(.style-image-alt) {
-    transition: transform .5s ease-in-out;
+    transition: transform 0.5s ease-in-out;
     &:hover {
       transform: scale(1.2);
     }
   }
 }
+#restaurant-container .img-container {
+  @include border-radius(bottom, 0);
+}
 #restaurants-list li h2::before,
 #restaurant-name::before,
 #reviews-container h2:before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -269,7 +224,7 @@ nav:not(#breadcrumb) {
 /* ====================== Restaurant Details ====================== */
 .restaurant-details {
   header {
-    background-color: $theme-color;
+    background: $animated-bg;
   }
   main {
     display: flex;
@@ -291,17 +246,20 @@ nav:not(#breadcrumb) {
     #map-container {
       padding: 15px;
       background-color: #fafafa;
+      border-radius: 5px;
+      box-shadow: $box-shadow;
     }
     #map {
       background-color: #ccc;
       width: 100%;
+      border-radius: 5px;
     }
   }
 }
 #restaurant-name {
   color: $theme-color;
   position: relative;
-  font-family: Arial,sans-serif;
+  font-family: Arial, sans-serif;
   font-size: 2rem;
   font-weight: 200;
   letter-spacing: 0;
@@ -311,7 +269,7 @@ nav:not(#breadcrumb) {
 #restaurant-container .img-container {
   border: 15px solid #fff;
   margin: 5px 0;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+  box-shadow: $box-shadow;
 }
 #restaurant-container img {
   width: 100%;
@@ -334,10 +292,12 @@ nav:not(#breadcrumb) {
   padding: 2px 0;
   text-align: center;
   text-transform: uppercase;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+  box-shadow: $box-shadow;
   margin-top: -5px;
+  @include border-radius(bottom);
 }
-#restaurant-container, #reviews-container {
+#restaurant-container,
+#reviews-container {
   border-bottom: 1px solid #fafafa;
   border-top: 1px solid #fff;
   padding: 10px 10px 30px;
@@ -359,14 +319,19 @@ nav:not(#breadcrumb) {
   li {
     background-color: #fff;
     display: block;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
     list-style-type: none;
     margin: 0 0 30px;
     overflow: hidden;
     padding: 0 0 20px;
+    border: 2px solid #fff;
     border-radius: 5px;
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+    box-shadow: $box-shadow;
     &:focus {
-      box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12), 0 0 0 0.2rem rgba(0, 128, 128,0.5);
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12),
+        0 0 0 0.2rem $theme-color;
     }
     p {
       margin: 0 0 10px;
@@ -374,44 +339,68 @@ nav:not(#breadcrumb) {
       &:not(:first-of-type):not(:last-of-type) {
         border-bottom: 1px solid #eee;
       }
-      &:first-of-type {
-        background-color: $theme-color;
+      &.rate {
+        padding: 0 10px;
+      }
+      &.user-name {
+        background: $animated-bg;
         font-size: 1.5rem;
         color: #fff;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
       }
       span {
-        font-size: 1.2rem;
         color: $theme-color;
+        letter-spacing: 5px;
       }
     }
   }
 }
 .table-card {
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+  box-shadow: $box-shadow;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  outline: none;
+  margin-bottom: 25px;
+  &:focus {
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+      0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12),
+      0 0 0 0.2rem $theme-color;
+  }
 }
 #restaurant-hours {
   font-size: 1rem;
   width: 100%;
+  border-radius: 5px;
   border-collapse: collapse;
   tr {
     background-color: #fff;
+    &:last-child {
+      th {
+        border-bottom-left-radius: 5px;
+      }
+      td {
+        border-bottom-right-radius: 5px;
+      }
+    }
     &:nth-of-type(even) {
       background-color: #fafafa;
     }
   }
   th {
     text-align: left;
-    padding: .75rem;
+    padding: 0.75rem;
     color: $theme-color;
     letter-spacing: 1px;
   }
   td {
     color: #666;
-    padding: .75rem;
+    padding: 0.75rem;
   }
   caption {
     font-size: 2rem;
-    background-color: $theme-color;
+    @include border-radius(top);
+    background: $animated-bg;
     color: #fff;
   }
 }
@@ -439,8 +428,8 @@ nav:not(#breadcrumb) {
   }
 }
 
-
-.focus-only, .focus-within-only {
+.focus-only,
+.focus-within-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -463,17 +452,18 @@ nav:not(#breadcrumb) {
   white-space: normal;
 }
 
-.above-nav:not(#breadcrumb), .focus-within-only a {
+.above-nav:not(#breadcrumb),
+.focus-within-only a {
   color: #fff;
   width: 100%;
   font-size: 1.2rem;
   padding: 5px;
   margin: 10px;
 }
-.above-nav:not(#breadcrumb), .focus-within-only a:focus {
+.above-nav:not(#breadcrumb),
+.focus-within-only a:focus {
   outline: 2px solid #fff;
 }
-
 
 .landmark {
   color: $theme-color;
@@ -489,7 +479,7 @@ img.style-image-alt {
   font-size: 2rem;
   min-height: 50vh;
   &::after {
-    content: 'Image not found!';
+    content: "Image not found!";
     display: block;
     color: #f00;
     margin-top: 2vmin;
@@ -514,5 +504,24 @@ img.style-image-alt {
   }
   &.yes {
     color: $theme-color;
+  }
+}
+
+.landmark-heading {
+  color: teal;
+  position: relative;
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: -1px;
+  padding-bottom: 1pt;
+
+  &:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 5%;
+    height: 2px;
+    background-color: teal;
   }
 }

@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#008080">
   <link rel="manifest" href="manifest.json">
   <link rel="shortcut icon" href="favicon.ico">
-  <title>Restaurant Info</title>
+  <title>Restaurant Info | </title>
   <link rel="stylesheet" href="css/styles.min.css" type="text/css">
 </head>
 
@@ -16,6 +16,7 @@
     <a href="#address">Restaurant's Address</a>
     <a href="#restaurant-hours">Restaurant's Timing</a>
     <a href="#reviews-container">Reviews</a>
+    <a href="#user_name">Post Review</a>
   </div>
   <!-- Beginning header -->
   <header>
@@ -45,16 +46,33 @@
       <p id="restaurant-cuisine" aria-label="Restaurant cuisine"></p>
       <h2 class="landmark" id="address">Address: </h2>
       <p id="restaurant-address" aria-labelledby="address"></p>
-      <hr/>
-      <div class="table-card">
+      <hr />
+      <div class="table-card" tabindex="0">
         <table id="restaurant-hours" aria-label="Restaurant hours">
           <caption class="landmark">Timing -</caption>
         </table>
+      </div>
+      <h2 class="landmark-heading" aria-hidden="true">Post Review</h2>
+      <div id="post-review" aria-label="From to post new review" tabindex="0">
+        <input type="text" id="user_name" placeholder="User Name" />
+        <div class="star-rating" aria-label="rating">
+          <button type="button" class="star 5" title="awaawesome" aria-label="star 5">☆</button>
+          <button type="button" class="star 4" title="good" aria-label="star 4">☆</button>
+          <button type="button" class="star 3" title="ok" aria-label="star 3">☆</button>
+          <button type="button" class="star 2" title="bad" aria-label="star 2">☆</button>
+          <button type="button" class="star 1" title="worst" aria-label="star 1">☆</button>
+        </div>
+        <textarea placeholder="Write hare.."></textarea>
+        <div class="actions">
+          <button type="button" class="cls">Clear</button>
+          <button type="button" class="snd">Post</button>
+        </div>
       </div>
     </section>
     <!-- end restaurant -->
     <!-- Beginning wraper -->
     <div class="wraper">
+      <h2 class="landmark-heading">Map</h2>
       <!-- Beginning map -->
       <section id="map-container">
         <div id="map" role="application" aria-label="restaurants location on map"></div>
@@ -73,13 +91,18 @@
   <footer>
     Copyright (c) 2018 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
+  <section class="toast hide">
+    <span class="toast-text"></span>
+    <button type="button" onclick="Toast.hide()">X</button>
+  </section>
   <!-- End footer -->
   <!-- Beginning scripts -->
+  <script type="text/javascript" src="js/idb-with-store.min.js"></script>
   <script type="text/javascript" src="js/lib.min.js"></script>
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.min.js"></script>
   <!-- Google Maps -->
- <!--  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_tKbW6A5pQ-eupxI56myUnHLqYCzOjKo&libraries=places&callback=initMap"></script> -->
+  <!--  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_tKbW6A5pQ-eupxI56myUnHLqYCzOjKo&libraries=places&callback=initMap"></script> -->
   <!-- End scripts -->
 
 </body>

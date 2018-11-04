@@ -1,0 +1,94 @@
+#post-review {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  letter-spacing: 1px;
+  border: 2px solid #fff;
+  box-shadow: $box-shadow;
+  outline: none;
+
+  &:focus-within {
+    box-shadow: 0 0 0 0.2rem $theme-color;
+  }
+
+  input,
+  textarea {
+    border: none;
+    font-size: 1.5rem;
+    padding: 5px 10px;
+    letter-spacing: 1px;
+    letter-spacing: 1px;
+    outline: none;
+    border-bottom: 1px solid #eee;
+    &:focus {
+      border-color: $theme-color;
+    }
+  }
+  h3 {
+    display: inline;
+  }
+
+  input {
+    @include border-radius(top);
+    background-color: rgba(0,128,128,0.7);
+
+    &:focus {
+      background-color: $theme-color;
+    }
+    &,
+    &::placeholder {
+      color: #fff;
+    }
+  }
+
+  textarea {
+    background-color: #fff;
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 5px 10px;
+    @include border-radius(bottom);
+    outline: none;
+
+    button {
+      margin: 0 5px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: 1px solid;
+      font-size: 1.5rem;
+      cursor: pointer;
+      outline: none;
+
+      &.cls {
+        color: #f00;
+        &:hover {
+          background-color: #f00;
+          color: #fff;
+        }
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
+        }
+      }
+      &.snd {
+        color: $theme-color;
+        &:hover {
+          background-color: $theme-color;
+          color: #fff;
+        }
+        &:focus {
+          box-shadow: 0 0 0 0.2rem $theme-color-alpha;
+        }
+      }
+    }
+  }
+
+  button {
+    background-color: transparent;
+    letter-spacing: 1px;
+    border: none;
+  }
+}

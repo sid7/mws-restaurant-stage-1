@@ -1,0 +1,37 @@
+.star-rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: 1px solid #eee;
+
+  &::after {
+    content: "Rating";
+    padding: 5px 10px;
+    font-size: 1.5rem;
+    color: $theme-color;
+  }
+
+  .star {
+    color: $theme-color;
+    display: inline-block;
+    font-size: 2rem;
+    position: relative;
+    cursor: pointer;
+
+    &:not(.sel):hover::before,
+    &:not(.sel):hover ~ .star:not(.sel)::before {
+      color: $theme-color-alpha;
+    }
+
+    &:hover:before,
+    &:hover ~ .star::before,
+    &:focus:before,
+    &:focus ~ .star::before,
+    &.sel ~ .star::before,
+    &.sel::before {
+      content: "\2605";
+      position: absolute;
+    }
+  }
+}
