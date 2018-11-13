@@ -86,7 +86,7 @@ class Sync {
   }
 
   static add(info) {
-    if (typeof info !== Object) {
+    if (typeof info !== "object") {
       throw new Error({ info, err: "arg is not typeof object" });
     }
     info._$id = Date.now();

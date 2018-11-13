@@ -333,20 +333,20 @@ class DBHelper {
     );
     return marker;
   } */
-  static fav(id, act) {
-    const url = `${db_url}/restaurants/${id}/?is_favorite=${act}`;
+  static fav(id, bool) {
+    const url = `${db_url}/restaurants/${id}/?is_favorite=${bool}`;
     if (navigator.onLine) {
       fetch(url, { method: "PUT" })
         .then(fetch_json_err_check)
         .then(data => {
-          console.log(data);
+          console.log({ url, bool, data });
           return store.add("restaurants", data);
         })
         .catch(err => {
           console.log("Action: Failed!", err);
         });
     } else {
-      loc_fav(id, act);
+      loc_fav(id, bool);
     }
   }
 }
