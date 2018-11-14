@@ -69,10 +69,7 @@ function inLoc(key) {
   return JSON.parse(localStorage.getItem(key) || "false");
 }
 function fetch_json_err_check(res) {
-  if (!res.ok) {
-    throw new Error(res.status);
-  }
-  return res.json();
+  return res.ok ? res.json() : Promise.reject(res.status);
 }
 
 /**
@@ -91,21 +88,22 @@ class DBHelper {
    * Fetch all restaurants.
    * */
   static fetchRestaurants(callback) {
-    if (inLoc("loc_all_rest")) {
-      store.getAll("restaurants").then(rest => callback(null, rest));
-    } else {
-      fetch(`${db_url}/restaurants`)
-        .then(fetch_json_err_check)
-        .then(data => {
-          callback(null, data);
-          store.addAll("restaurants", data).then(() => {
-            localStorage.setItem("loc_all_rest", true);
-          });
-        })
-        .catch(err => {
-          callback(err, null);
+    fetch(`${db_url}/restaurants`)
+      .then(fetch_json_err_check)
+      .then(data => {
+        callback(null, data);
+        store.addAll("restaurants", data).then(() => {
+          localStorage.setItem("loc_all_rest", true);
         });
-    }
+      })
+      .catch(err => {
+        if (inLoc("loc_all_rest")) {
+          console.log("Restaurant fetch failed!", err);
+          store.getAll("restaurants").then(rest => callback(null, rest));
+        } else {
+          callback(err, null);
+        }
+      });
   }
 
   /**
@@ -140,7 +138,6 @@ class DBHelper {
     }
   }
   static fetchLocalReviewsById(id) {
-    // return store.getAllRevsByRestId_from_offline(id);
     return store
       .getAll("offline-reviews")
       .then(items =>
@@ -155,24 +152,26 @@ class DBHelper {
    */
   static fetchRestaurantReview(id, callback) {
     const loc_rev = JSON.parse(localStorage.getItem("loc_rev") || "[]");
-    if (loc_rev.includes(id)) {
-      store.getAllByIndex("reviews", "restaurant_id", id).then(rev => {
+    fetch(`${db_url}/reviews/?restaurant_id=${id}`)
+      .then(fetch_json_err_check)
+      .then(rev => {
         callback(null, rev);
-      });
-    } else {
-      fetch(`${db_url}/reviews/?restaurant_id=${id}`)
-        .then(fetch_json_err_check)
-        .then(rev => {
-          callback(null, rev);
-          store.addAll("reviews", rev).then(() => {
+        store.addAll("reviews", rev).then(() => {
+          if (!loc_rev.includes(id)) {
             loc_rev.push(id);
             localStorage.setItem("loc_rev", JSON.stringify(loc_rev));
-          });
-        })
-        .catch(err => {
-          callback(err, null);
+          }
         });
-    }
+      })
+      .catch(err => {
+        if (loc_rev.includes(id)) {
+          store.getAllByIndex("reviews", "restaurant_id", id).then(rev => {
+            callback(null, rev);
+          });
+        } else {
+          callback(err, null);
+        }
+      });
   }
 
   static fetchRestaurantWithReview(id, callback) {
@@ -182,11 +181,10 @@ class DBHelper {
         return;
       }
       this.fetchRestaurantReview(id, (err2, rev) => {
-        rest.reviews = rev;
+        rest.reviews = err2 ? 404 : rev;
+        callback(null, rest);
         if (err2) {
-          callback(err2, null);
-        } else {
-          callback(null, rest);
+          Toast.show("Failed to fetch Reviews!");
         }
       });
     });

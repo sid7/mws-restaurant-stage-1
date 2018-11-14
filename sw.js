@@ -3,7 +3,7 @@
 /**
  * name of caches
  */
-const static_cache = "restaurant-reviews-v2.0.40";
+const static_cache = "restaurant-reviews-v2.2";
 const img_cache = "restaurant-reviews-imgs";
 const map_imgs_cache = "restaurant-reviews-map_imgs";
 
@@ -80,15 +80,10 @@ function srv_cache(store, url, db) {
     .catch(err => console.log(err));
 }
 
-// function handle_db(db, res) {
-//   res.json().then(data => {
-//     store.addAll(db, data);
-//   });
-// }
 self.addEventListener("fetch", e => {
   const url = new URL(e.request.url);
   if (url.pathname === "/restaurant.html") {
-    url.search = "";
+    // url.search = "";
     e.respondWith(caches.match("/restaurant.html"));
     return;
   }
@@ -101,15 +96,10 @@ self.addEventListener("fetch", e => {
     );
     return;
   }
-  // if (url.origin.endsWith(1337)) {
-  //   e.respondWith(fetch(url.href));
-  //   return;
-  // }
   if (url.host === "api.tiles.mapbox.com") {
     e.respondWith(srv_cache(map_imgs_cache, url.href));
     return;
   }
-  // e.respondWith(caches.match(e.request).then(cRes => cRes || fetch(e.request)));
 });
 
 self.addEventListener("message", e => {

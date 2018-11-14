@@ -45,6 +45,7 @@ class Sync {
     }
     if (log.errs.length > 0) {
       errs.forEach(err => console.log(...err));
+      console.log("Sync: check ended!");
     }
   }
   static async fav() {
@@ -82,7 +83,6 @@ class Sync {
     console.log("Sync: check begain");
     Sync.fav();
     Sync.rev();
-    console.log("Sync: check ended!");
   }
 
   static add(info) {
@@ -93,5 +93,3 @@ class Sync {
     return store.add("offline-reviews", info);
   }
 }
-
-addEventListener("online", Sync.do);

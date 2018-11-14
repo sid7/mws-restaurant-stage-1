@@ -5,7 +5,6 @@ const concat = require("gulp-concat");
 const sourcemaps = require("gulp-sourcemaps");
 const rename = require("gulp-rename");
 const uglify = require("gulp-uglify-es").default;
-const serve = require("gulp-serve");
 
 const path = {
   styles: {
@@ -13,20 +12,13 @@ const path = {
     dest: "./css/"
   },
   scripts: { src: "./src/js/*.js", dest: "./js/" },
-  lib: { src: "./src/lib/*.js", dest: "./js/" },
-  db: { src: "./src/db/*.js", dest: "./js/" }
+  lib: { src: "./src/lib/*.js", dest: "./js/" }
 };
-
-gulp.task("srv", serve({
-  root: [__dirname],
-  port: 8010,
-  https: true
-}))
 
 /**
  * gulp task to handle css and scss
  */
-gulp.task("styles", function() {
+gulp.task("styles", function () {
   return gulp
     .src(path.styles.src)
     .pipe(
@@ -43,7 +35,7 @@ gulp.task("styles", function() {
 /**
  * gulp task to gen bundle js file for common scripts
  */
-gulp.task("lib", function() {
+gulp.task("lib", function () {
   return gulp
     .src(path.lib.src)
     .pipe(sourcemaps.init())
@@ -56,7 +48,7 @@ gulp.task("lib", function() {
 /**
  * gulp task to optimise js scripts
  */
-gulp.task("scripts", function() {
+gulp.task("scripts", function () {
   return gulp
     .src(path.scripts.src)
     .pipe(sourcemaps.init())
@@ -66,17 +58,7 @@ gulp.task("scripts", function() {
     .pipe(gulp.dest(path.scripts.dest));
 });
 
-gulp.task("db", function() {
-  return gulp
-    .src(path.db.src)
-    .pipe(sourcemaps.init())
-    .pipe(concat("idb-with-store.min.js"))
-    .pipe(uglify())
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest(path.db.dest));
-});
-
 /**
- * gulp task to run all build/dev task
+ * gulp task to run all task
  */
 gulp.task("build", ["styles", "scripts", "lib", "db"]);

@@ -1,4 +1,3 @@
-
 class __store {
   prefy(a) {
     return `${this.__prefex}_${a}`;
@@ -47,9 +46,6 @@ class __store {
   }
   addAll(db, items) {
     return Promise.all(items.map(item => this.add(db, item)));
-    // for (const item of arr) {
-    //   await this.add(db, item);
-    // }
   }
   getAllById(store, id) {
     store = this.prefy(store);

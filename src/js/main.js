@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
   initMap(); // added
   fetchNeighborhoods();
   fetchCuisines();
+  
+  addEventListener("online", Sync.do);
+  addEventListener("offline", function () {
+    Toast.show("You are offline!");
+  });
 });
 
 /**

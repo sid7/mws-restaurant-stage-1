@@ -81,6 +81,12 @@ document.addEventListener("DOMContentLoaded", event => {
         });
       });
   });
+
+  addEventListener("online", Sync.do);
+
+  addEventListener("offline", function () {
+    Toast.show("You are offline!");
+  });
 });
 
 /**
@@ -277,11 +283,30 @@ fillReviewsHTML = (
   title.innerHTML = "Reviews";
   container.appendChild(title);
 
+  if (reviews === 404) {
+    const rev404 = document.createElement("p");
+    rev404.innerHTML = "Failed to Fetch reviews!";
+    container.appendChild(rev404);
+    if (local_reviews.length !== 0) {
+      const ul = document.getElementById("reviews-list");
+      local_reviews.forEach(lr => {
+        ul.appendChild(createReviewHTML(lr, true));
+      });
+      container.appendChild(ul);
+    }
+    return;
+  }
+
   if (!reviews && local_reviews.length === 0) {
     const noReviews = document.createElement("p");
     noReviews.innerHTML = "No reviews yet!";
     container.appendChild(noReviews);
     return;
+  }
+  if(!reviews || reviews === 404) {
+    const noReviews = document.createElement("p");
+    noReviews.innerHTML = reviews === 404 ? "Failed to Fetch reviews!" : "No reviews yet!";
+    container.appendChild(noReviews);
   }
   const ul = document.getElementById("reviews-list");
   reviews.forEach(review => {
